@@ -2,9 +2,15 @@ package com.sunnyweather.android.logic
 
 import androidx.lifecycle.liveData
 import com.sunnyweather.android.logic.dao.PlaceDao
+import com.sunnyweather.android.logic.dao.PlaceDatabaseHelper
+import com.sunnyweather.android.logic.model.DailyResponse
 import com.sunnyweather.android.logic.model.Place
+import com.sunnyweather.android.logic.model.PlaceWeather
+import com.sunnyweather.android.logic.model.RealtimeResponse
 import com.sunnyweather.android.logic.model.Weather
+import com.sunnyweather.android.logic.model.allinfo
 import com.sunnyweather.android.logic.network.SunnyWeatherNetwork
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -31,6 +37,7 @@ object Repository {
             }
             val realtimeResponse = deferredRealtime.await()
             val dailyResponse = deferredDaily.await()
+
             if (realtimeResponse.status == "ok" && dailyResponse.status == "ok") {
                 val weather = Weather(
                     realtimeResponse.result.realtime,
@@ -48,6 +55,33 @@ object Repository {
         }
     }
 
+    fun refreshWeatherList(placeList: List<Place>) = fire(Dispatchers.IO) {
+        coroutineScope {
+            val weatherDataList = mutableListOf<allinfo>()
+            for (place in placeList) {
+                val location = place.location
+                val lng = location.lng
+                val lat = location.lat
+                val deferredRealtime = async { SunnyWeatherNetwork.getRealtimeWeather(lng, lat) }
+                val deferredDaily = async { SunnyWeatherNetwork.getDailyWeather(lng, lat) }
+                val realtimeResponse = deferredRealtime.await()
+                val dailyResponse = deferredDaily.await()
+                if (realtimeResponse.status == "ok" && dailyResponse.status == "ok") {
+                    val weather = Weather(realtimeResponse.result.realtime, dailyResponse.result.daily)
+                    weatherDataList.add(allinfo(place, weather))
+                }
+            }
+            if(weatherDataList.size == placeList.size) {
+                Result.success(weatherDataList)
+            } else {
+                Result.failure(
+                    RuntimeException("Request incomplete, please try requesting one by one")
+                )
+            }
+        }
+    }
+
+
     private fun <T> fire(context: CoroutineContext, block: suspend () -> Result<T>) =
         liveData<Result<T>>(context) {
             val result = try {
@@ -63,4 +97,14 @@ object Repository {
     fun getSavedPlace() = PlaceDao.getSavedPlace()
 
     fun isPlaceSaved() = PlaceDao.isPlaceSaved()
+
+
+
+    fun addPlace(place: Place) = PlaceDatabaseHelper.insertPlace(place)
+
+    fun getAllPlace() = PlaceDatabaseHelper.getAllPlaces()
+
+    fun deletePlace(place: Place) = PlaceDatabaseHelper.deletePlace(place)
+
+    fun isPlaceExists(place: Place) = PlaceDatabaseHelper.isPlaceExists(place)
 }

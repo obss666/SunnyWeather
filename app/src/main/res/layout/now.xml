@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="530dp"
     android:orientation="vertical">
+
     <FrameLayout
         android:id="@+id/titleLayout"
         android:layout_width="match_parent"
@@ -12,20 +13,29 @@
             android:id="@+id/navBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="15dp"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/ic_home" />
+            android:layout_marginStart="15dp"
+            android:background="@drawable/ic_search" />
+
         <TextView
             android:id="@+id/placeName_D"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginStart="60dp"
             android:layout_marginEnd="60dp"
-            android:layout_gravity="center"
-            android:singleLine="true"
             android:ellipsize="middle"
+            android:singleLine="true"
             android:textColor="#fff"
             android:textSize="22sp" />
+
+        <Button
+            android:id="@+id/manBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/ic_options" />
     </FrameLayout>
     <LinearLayout
         android:id="@+id/bodyLayout"

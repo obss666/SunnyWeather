@@ -1,4 +1,4 @@
-package com.sunnyweather.android.base
+package com.sunnyweather.android.ui.base
 
 import android.app.Activity
 import android.os.Bundle

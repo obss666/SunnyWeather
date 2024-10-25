@@ -1,4 +1,4 @@
-package com.sunnyweather.android
+package com.sunnyweather.android.ui
 
 import android.annotation.SuppressLint
 import android.app.Application

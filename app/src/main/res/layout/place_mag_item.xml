@@ -1,0 +1,51 @@
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="20dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#0D98E1">
+
+        <CheckBox
+            android:id="@+id/selectionCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/magplaceName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#F0F4F2"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/status_temperaturerng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/magplaceName"
+            android:layout_marginLeft="15dp"
+            android:textColor="#C6E0E4"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="40dp"
+            android:textColor="#F0F4F2"
+            android:textSize="40sp" />
+
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>
