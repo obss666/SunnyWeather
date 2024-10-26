@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
 
     <application
         android:name="com.sunnyweather.android.ui.SunnyWeatherApplication"
@@ -17,10 +19,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SunnyWeather"
         tools:targetApi="31">
+        <service
+            android:name="com.sunnyweather.android.ui.service.WeatherService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="dataSync">
+        </service>
         <activity
             android:name="com.sunnyweather.android.ui.activity.ManageActivity"
-            android:label="城市管理"
-            android:exported="false" />
+            android:exported="false"
+            android:label="城市管理" />
         <activity
             android:name="com.sunnyweather.android.ui.activity.WeatherActivity"
             android:exported="false" />

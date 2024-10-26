@@ -44,7 +44,6 @@ class PlaceAdapter(private val fragment: PlaceFragment, private val placeList: L
                 fragment.startActivity(intent)
                 fragment.activity?.finish()
             }
-            fragment.viewModel.savePlace(place)
         }
         return holder
     }

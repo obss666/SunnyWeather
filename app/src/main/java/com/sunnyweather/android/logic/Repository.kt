@@ -75,7 +75,7 @@ object Repository {
                 Result.success(weatherDataList)
             } else {
                 Result.failure(
-                    RuntimeException("Request incomplete, please try requesting one by one")
+                    RuntimeException("Request incomplete")
                 )
             }
         }

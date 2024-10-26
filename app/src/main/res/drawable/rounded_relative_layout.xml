@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/transparent" /> <!-- 设置填充颜色为透明，以便只显示边框 -->
+    <stroke
+        android:width="2dp"
+        android:color="#000000"
+        android:dashWidth="0dp"
+        android:dashGap="0dp" />
+    <corners
+        android:radius="40dp"
+    />
+</shape>

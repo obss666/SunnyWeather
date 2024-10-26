@@ -1,16 +1,19 @@
 package com.sunnyweather.android.ui.activity
 
-import android.app.ActionBar
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sunnyweather.databinding.ActivityManageBinding
+import com.sunnyweather.android.Utils.getContentAfterLastSpace
+import com.sunnyweather.android.ui.SunnyWeatherApplication
 import com.sunnyweather.android.ui.adaptr.ManageAdaptr
 import com.sunnyweather.android.ui.base.BaseBindingActivity
 import com.sunnyweather.android.viewmodel.WeatherViewModel
+
 
 class ManageActivity : BaseBindingActivity<ActivityManageBinding>() {
     val viewModel by lazy { ViewModelProvider(this).get(WeatherViewModel::class.java) }
@@ -54,12 +57,26 @@ class ManageActivity : BaseBindingActivity<ActivityManageBinding>() {
         binding.remindBtn.setOnClickListener{
             val selectedItems = adapter.getSelectedItems()
             if(selectedItems.size == 1) {
-
+                val place = selectedItems[0].place
+                viewModel.savePlace(place)
+                Toast.makeText(this,"已设置${place.name.getContentAfterLastSpace()}作为提醒城市",
+                    Toast.LENGTH_SHORT).show()
+                adapter.setIsSelecting(false)
+                val intent = Intent(this, WeatherActivity::class.java).apply {
+                    putExtra("location_lng", place.location.lng)
+                    putExtra("location_lat", place.location.lat)
+                    putExtra("place_name", place.name)
+                    putExtra("place_address", place.address)
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(this,"请选择一个提醒城市", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.finishBtn.setOnClickListener {
-            viewModel.refreshWeatherDataList()
             adapter.setIsSelecting(false)
         }
 

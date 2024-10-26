@@ -2,8 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray"> #D0CFCF</color>
     <color name="colorAccent">#FFEB3B</color>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-
+    <color name="colorPrimary">#C6A5F4</color>
+    <color name="colorPrimaryDark">#D8F6F1</color>
+    <color name="violet">#ee82ee</color><!--紫罗兰色 -->
+    <color name="superblue">#38ACFF</color><!--超级蓝色 -->
 </resources>

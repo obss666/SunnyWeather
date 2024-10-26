@@ -71,7 +71,6 @@ class ManageAdaptr(private val activity: ManageActivity)
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 activity.startActivity(intent)
-                activity.viewModel.savePlace(info.place)
                 activity.finish()
             }
         }
@@ -117,7 +116,6 @@ class ManageAdaptr(private val activity: ManageActivity)
         notifyDataSetChanged()
         updateSelectingStatus()
     }
-
 
     fun getSelectedItems() = selectedIndices.map { managerList[it] }
 

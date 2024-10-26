@@ -9,10 +9,24 @@
 <!--        <item name="colorAccent">@color/colorAccent</item>-->
 <!--    </style>-->
 
-    <style name="Theme.SunnyWeather" parent="Theme.Material3.DynamicColors.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+<!--    <style name="Theme.SunnyWeather" parent="Theme.Material3.DynamicColors.Light.NoActionBar">-->
+<!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+<!--        <item name="colorAccent">@color/colorAccent</item>-->
+<!--    </style>-->
+    <style name="Theme.SunnyWeather" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/superblue</item>
+        <item name="colorPrimaryDark">@color/violet</item>
+        <item name="colorPrimaryVariant">@android:color/holo_orange_dark</item>
+        <item name="colorOnPrimary">@android:color/darker_gray</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/violet</item>
+        <item name="colorSecondaryVariant">@color/superblue</item>
+        <item name="colorOnSecondary">@android:color/background_light</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

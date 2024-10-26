@@ -79,7 +79,7 @@ class WeatherActivity : BaseBindingActivity<ActivityWeatherBinding>() {
             binding.swipeRefresh.isRefreshing = false
         }
 
-//        binding.swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
+        binding.swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
         refreshWeather()
         binding.swipeRefresh.setOnRefreshListener {
             refreshWeather()
