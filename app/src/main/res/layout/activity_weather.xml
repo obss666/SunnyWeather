@@ -54,7 +54,7 @@
         android:layout_gravity="start"
         android:clickable="true"
         android:focusable="true"
-        android:background="@color/colorPrimary">
+        android:background="@drawable/bg_weather">
         <fragment
             android:id="@+id/placeFragment"
             android:name="com.sunnyweather.android.ui.fragment.PlaceFragment"
