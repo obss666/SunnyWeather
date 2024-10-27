@@ -1,10 +1,8 @@
 package com.sunnyweather.android.ui.base
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
 abstract class BaseBindingActivity<VB : ViewBinding> : AppCompatActivity() {
@@ -19,7 +17,4 @@ abstract class BaseBindingActivity<VB : ViewBinding> : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }

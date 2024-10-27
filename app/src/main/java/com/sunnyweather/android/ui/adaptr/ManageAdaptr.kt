@@ -1,5 +1,7 @@
 package com.sunnyweather.android.ui.adaptr
 
+import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +11,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunnyweather.R
 import com.sunnyweather.android.Utils.getContentAfterLastSpace
-import com.sunnyweather.android.logic.model.PlaceWeather
-import com.sunnyweather.android.logic.model.allinfo
+import com.sunnyweather.android.logic.model.PlaceWithWeather
 import com.sunnyweather.android.ui.activity.ManageActivity
 import com.sunnyweather.android.ui.activity.WeatherActivity
 
-class ManageAdaptr(private val activity: ManageActivity)
+class ManageAdaptr(private val activity: ManageActivity, private val managerList: List<PlaceWithWeather>)
     : RecyclerView.Adapter<ManageAdaptr.ViewHolder>() {
 
-    private var managerList : List<allinfo> = emptyList()
     private val selectedIndices = mutableListOf<Int>()
     private var isSelecting = false
 
@@ -48,6 +48,7 @@ class ManageAdaptr(private val activity: ManageActivity)
             return true
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View) {
             if (isSelecting) {
                 val position = adapterPosition
@@ -61,16 +62,15 @@ class ManageAdaptr(private val activity: ManageActivity)
                 notifyDataSetChanged()
             } else {
                 val position = adapterPosition
-                val info = managerList[position]
+                val placeWithWeather = managerList[position]
 
                 val intent = Intent(v.context, WeatherActivity::class.java).apply {
-                    putExtra("location_lng", info.place.location.lng)
-                    putExtra("location_lat", info.place.location.lat)
-                    putExtra("place_name", info.place.name)
-                    putExtra("place_address", info.place.address)
+                    putExtra("location_lng", placeWithWeather.place.location.lng)
+                    putExtra("location_lat", placeWithWeather.place.location.lat)
+                    putExtra("place_name", placeWithWeather.place.name)
+                    putExtra("place_address", placeWithWeather.place.address)
                 }
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                activity.startActivity(intent)
+                activity.setResult(RESULT_OK, intent)
                 activity.finish()
             }
         }
@@ -83,9 +83,8 @@ class ManageAdaptr(private val activity: ManageActivity)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val info = managerList[position]
-        val placeWeather = PlaceWeather(info.place.name, info.weather.daily.temperature[0], info.weather.realtime.temperature)
-        holder.magplaceName.text = placeWeather.placename.getContentAfterLastSpace()
+        val placeWeather = managerList[position]
+        holder.magplaceName.text = placeWeather.place.name.getContentAfterLastSpace()
         holder.temperaturerng.text = "${placeWeather.temperatureRange.min.toInt()} ~ ${placeWeather.temperatureRange.max.toInt()} °C"
         holder.temperature.text = "${placeWeather.temperature .toInt()} °C"
 
@@ -94,13 +93,6 @@ class ManageAdaptr(private val activity: ManageActivity)
     }
 
     override fun getItemCount() = managerList.size
-
-    fun updateData(newDataList: List<allinfo>) {
-        managerList = newDataList
-        selectedIndices.clear()
-        isSelecting = false
-        notifyDataSetChanged()
-    }
 
     // 更新删除按钮的可见性
     private fun updateSelectingStatus() {
@@ -118,7 +110,5 @@ class ManageAdaptr(private val activity: ManageActivity)
     }
 
     fun getSelectedItems() = selectedIndices.map { managerList[it] }
-
-    fun getManagerList() = managerList
 }
 

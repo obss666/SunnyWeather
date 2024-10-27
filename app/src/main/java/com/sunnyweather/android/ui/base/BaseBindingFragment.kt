@@ -20,8 +20,4 @@ abstract class BaseBindingFragment<VB : ViewBinding> : Fragment() {
         binding = getViewBinding(inflater, container)
         return binding.root
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 }

@@ -15,6 +15,8 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +39,8 @@ class WeatherActivity : BaseBindingActivity<ActivityWeatherBinding>() {
 
     val viewModel by lazy { ViewModelProvider(this).get(WeatherViewModel::class.java) }
 
+    private lateinit var startForResultLauncher: ActivityResultLauncher<Intent>
+
     override fun getViewBinding(layoutInflater: LayoutInflater): ActivityWeatherBinding {
         return ActivityWeatherBinding.inflate(layoutInflater)
     }
@@ -44,29 +48,15 @@ class WeatherActivity : BaseBindingActivity<ActivityWeatherBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         val decorView = window.decorView
         decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         window.statusBarColor = Color.TRANSPARENT
 
-
-        if (viewModel.locationLng.isEmpty()) {
-            viewModel.locationLng = intent.getStringExtra("location_lng") ?: ""
-        }
-
-        if (viewModel.locationLat.isEmpty()) {
-            viewModel.locationLat = intent.getStringExtra("location_lat") ?: ""
-        }
-
-        if (viewModel.placeName.isEmpty()) {
-            viewModel.placeName = intent.getStringExtra("place_name") ?: ""
-        }
-
-        if (viewModel.placeAddress.isEmpty()) {
-            viewModel.placeAddress = intent.getStringExtra("place_address") ?: ""
-        }
-
-        LogUtil.d("111111111111111111", "111111111111111111")
+        val name = intent.getStringExtra("place_name") ?: ""
+        val lng = intent.getStringExtra("location_lng") ?: ""
+        val lat = intent.getStringExtra("location_lat") ?: ""
+        val address =  intent.getStringExtra("place_address") ?: ""
+        viewModel.place = Place(name,Location(lng,lat),address)
 
         viewModel.weatherLiveData.observe(this) { result ->
             val weather = result.getOrNull()
@@ -80,7 +70,6 @@ class WeatherActivity : BaseBindingActivity<ActivityWeatherBinding>() {
         }
 
         binding.swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
-        refreshWeather()
         binding.swipeRefresh.setOnRefreshListener {
             refreshWeather()
         }
@@ -101,21 +90,30 @@ class WeatherActivity : BaseBindingActivity<ActivityWeatherBinding>() {
             }
         })
 
+        startForResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    val name = data.getStringExtra("place_name") ?: ""
+                    val lng = data.getStringExtra("location_lng") ?: ""
+                    val lat = data.getStringExtra("location_lat") ?: ""
+                    val address =  data.getStringExtra("place_address") ?: ""
+                    LogUtil.d("返回",name + "\n" + lng + "\n" + lat + "\n" + address)
+                    viewModel.place = Place(name,Location(lng,lat),address)
+                }
+            }
+        }
+
         findViewById<Button>(R.id.manBtn).setOnClickListener{
             val intent = Intent(this, ManageActivity::class.java)
-            startActivity(intent)
+            startForResultLauncher.launch(intent)
         }
 
         binding.addPlace.setOnClickListener{ view ->
             Snackbar.make(view, "已添加到城市列表", Snackbar.LENGTH_SHORT).show()
-            viewModel.addPlace()
-            binding.addPlace.visibility = View.INVISIBLE
+            viewModel.addPlace(viewModel.place)
+            refreshWeather()
         }
-
-        LogUtil.d("111111111111111111", viewModel.placeName + "\n"
-                + viewModel.locationLng+ "\n"
-                + viewModel.locationLat+ "\n"
-                +viewModel.placeAddress+ "\n")
 
     }
 
@@ -125,16 +123,14 @@ class WeatherActivity : BaseBindingActivity<ActivityWeatherBinding>() {
     }
 
     fun refreshWeather() {
-        viewModel.refreshWeather(viewModel.locationLng, viewModel.locationLat)
+        viewModel.refreshWeather(viewModel.place.location.lng, viewModel.place.location.lat)
         binding.swipeRefresh.isRefreshing = true
-        if(!viewModel.isPlaceExists(Place(viewModel.placeName,
-                Location(viewModel.locationLng, viewModel.locationLat),
-                viewModel.placeAddress))) binding.addPlace.visibility = View.VISIBLE
+        if(!viewModel.isPlaceExists(viewModel.place)) binding.addPlace.visibility = View.VISIBLE
         else binding.addPlace.visibility = View.GONE
     }
 
     private fun showWeatherInfo(weather: Weather) {
-        findViewById<TextView>(R.id.placeName_D).text = viewModel.placeName.getContentAfterLastSpace()
+        findViewById<TextView>(R.id.placeName_D).text = viewModel.place.name.getContentAfterLastSpace()
         val realtime = weather.realtime
         val daily = weather.daily
         // 填充now.xml布局中的数据

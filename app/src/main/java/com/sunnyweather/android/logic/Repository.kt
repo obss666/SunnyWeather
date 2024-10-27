@@ -3,14 +3,10 @@ package com.sunnyweather.android.logic
 import androidx.lifecycle.liveData
 import com.sunnyweather.android.logic.dao.PlaceDao
 import com.sunnyweather.android.logic.dao.PlaceDatabaseHelper
-import com.sunnyweather.android.logic.model.DailyResponse
 import com.sunnyweather.android.logic.model.Place
-import com.sunnyweather.android.logic.model.PlaceWeather
-import com.sunnyweather.android.logic.model.RealtimeResponse
+import com.sunnyweather.android.logic.model.PlaceWithWeather
 import com.sunnyweather.android.logic.model.Weather
-import com.sunnyweather.android.logic.model.allinfo
 import com.sunnyweather.android.logic.network.SunnyWeatherNetwork
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -57,7 +53,7 @@ object Repository {
 
     fun refreshWeatherList(placeList: List<Place>) = fire(Dispatchers.IO) {
         coroutineScope {
-            val weatherDataList = mutableListOf<allinfo>()
+            val weatherDataList = mutableListOf<PlaceWithWeather>()
             for (place in placeList) {
                 val location = place.location
                 val lng = location.lng
@@ -68,10 +64,12 @@ object Repository {
                 val dailyResponse = deferredDaily.await()
                 if (realtimeResponse.status == "ok" && dailyResponse.status == "ok") {
                     val weather = Weather(realtimeResponse.result.realtime, dailyResponse.result.daily)
-                    weatherDataList.add(allinfo(place, weather))
+                    weatherDataList.add(
+                        PlaceWithWeather(place, weather.daily.temperature[0], weather.realtime.temperature)
+                    )
                 }
             }
-            if(weatherDataList.size == placeList.size) {
+            if (weatherDataList.size == placeList.size) {
                 Result.success(weatherDataList)
             } else {
                 Result.failure(
